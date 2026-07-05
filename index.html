@@ -428,7 +428,7 @@
       `;
 
       try {
-        const response = await fetch(`/api/weather?location=${encodeURIComponent(location)}`);
+        const response = await fetch(`/api?location=${encodeURIComponent(location)}`);
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.error || "날씨 정보를 불러오지 못했습니다.");
