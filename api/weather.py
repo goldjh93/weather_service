@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import json
 import sys
 from datetime import datetime
-from http.server import BaseHTTPRequestHandler
 from pathlib import Path
-from urllib.parse import parse_qs, urlencode, urlparse
+from urllib.parse import urlencode
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -104,27 +102,3 @@ def build_weather_payload(query: str) -> dict:
         },
         "rows": rows,
     }
-
-
-class handler(BaseHTTPRequestHandler):
-    def do_GET(self) -> None:
-        parsed = urlparse(self.path)
-        query = parse_qs(parsed.query).get("location", [""])[0].strip()
-
-        if not query:
-            self.send_json({"error": "location query parameter is required"}, status=400)
-            return
-
-        try:
-            self.send_json(build_weather_payload(query))
-        except Exception as exc:
-            self.send_json({"error": str(exc)}, status=500)
-
-    def send_json(self, payload: dict, status: int = 200) -> None:
-        encoded = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Cache-Control", "s-maxage=600, stale-while-revalidate=300")
-        self.send_header("Content-Length", str(len(encoded)))
-        self.end_headers()
-        self.wfile.write(encoded)

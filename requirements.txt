@@ -1,7 +1,1 @@
-# Vercel runtime dependencies.
-# The deployed web page and /api/weather.py use only the Python standard library.
-#
-# matplotlib is intentionally not listed here because it is only needed for the
-# optional local PNG script:
-#   .venv/bin/python -m pip install matplotlib
-#   .venv/bin/python plot_temperature.py --output today_temperature.png
+Flask>=3.0,<4
